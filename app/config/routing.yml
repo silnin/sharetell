@@ -1,0 +1,11 @@
+browser:
+    resource: "@BrowserBundle/Resources/config/routing.yml"
+    prefix:   /browse
+
+user:
+    resource: "@UserBundle/Resources/config/routing.yml"
+    prefix:   /user
+
+frontpage:
+    resource: "@FrontpageBundle/Resources/config/routing.yml"
+    prefix:   /

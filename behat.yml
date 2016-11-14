@@ -1,0 +1,14 @@
+# behat.yml
+default:
+  suites:
+    my_suite:
+      contexts:
+        - FeatureContext
+#        - Behat\MinkExtension\Context\MinkContext
+  extensions:
+    Behat\MinkExtension:
+      base_url: http://localhost
+      sessions:
+        default:
+          goutte: ~
+#          selenium2: ~

@@ -1,0 +1,4 @@
+services:
+#    frontpage.example:
+#        class: FrontpageBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]
