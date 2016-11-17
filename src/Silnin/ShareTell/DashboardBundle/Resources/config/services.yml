@@ -2,3 +2,9 @@ services:
 #    silnin_share_tell_dashboard.example:
 #        class: Silnin\ShareTell\DashboardBundle\Example
 #        arguments: ["@service_id", "plain_value", "%parameter%"]
+
+  silnin_share_tell_dashboard.default_controller:
+    class: Silnin\ShareTell\DashboardBundle\Controller\DefaultController
+    arguments:
+    - "@silnin.user_repository"
+    - "@templating"

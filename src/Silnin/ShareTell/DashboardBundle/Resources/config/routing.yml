@@ -1,3 +1,4 @@
 silnin_share_tell_dashboard_homepage:
     path:     /
-    defaults: { _controller: SilninShareTellDashboardBundle:Default:index }
+#    defaults: { _controller: SilninShareTellDashboardBundle:Default:index }
+    defaults: { _controller: silnin_share_tell_dashboard.default_controller:indexAction }

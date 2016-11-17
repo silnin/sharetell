@@ -2,3 +2,14 @@ services:
 #    silnin_user.example:
 #        class: Silnin\UserBundle\Example
 #        arguments: ["@service_id", "plain_value", "%parameter%"]
+
+#  silnin.user_repository:
+#    class: Silnin\UserBundle\Repository\UserRepository
+#    arguments:
+#    - "@doctrine.orm.entity_manager"
+
+  silnin.user_repository:
+    class: Silnin\UserBundle\Repository\UserRepository
+    factory: ['@doctrine.orm.default_entity_manager', getRepository]
+    arguments:
+        - Silnin\UserBundle\Entity\User

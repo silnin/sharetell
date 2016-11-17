@@ -12,3 +12,4 @@ default:
         default:
           goutte: ~
 #          selenium2: ~
+    Behat\Symfony2Extension: ~
