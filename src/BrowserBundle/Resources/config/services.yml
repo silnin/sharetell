@@ -1,4 +1,0 @@
-services:
-#    browser.example:
-#        class: BrowserBundle\Example
-#        arguments: ["@service_id", "plain_value", "%parameter%"]

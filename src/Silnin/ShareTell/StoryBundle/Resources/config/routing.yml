@@ -1,0 +1,3 @@
+silnin_share_tell_story_homepage:
+    path:     /
+    defaults: { _controller: SilninShareTellStoryBundle:Default:index }

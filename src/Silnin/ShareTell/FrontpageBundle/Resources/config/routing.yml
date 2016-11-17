@@ -1,0 +1,3 @@
+silnin_share_tell_frontpage_homepage:
+    path:     /
+    defaults: { _controller: SilninShareTellFrontpageBundle:Default:index }

@@ -5,6 +5,6 @@ Feature: Story browser
 
   Scenario: public games overview
     Given I am logged in
-    And there are public stories available
-    When I log in
-    Then I see available public stories
+    And there is is a public story named "Kumbaya" available
+    When I am on "/dashboard"
+    Then I should see text matching "Kumbaya"

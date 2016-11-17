@@ -1,0 +1,4 @@
+services:
+#    silnin_share_tell_dashboard.example:
+#        class: Silnin\ShareTell\DashboardBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]

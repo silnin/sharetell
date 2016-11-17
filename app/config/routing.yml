@@ -1,15 +1,14 @@
-story:
-    resource: "@StoryBundle/Resources/config/routing.yml"
+silnin_share_tell_story:
+    resource: "@SilninShareTellStoryBundle/Resources/config/routing.yml"
+    prefix:   /story
+
+silnin_share_tell_dashboard:
+    resource: "@SilninShareTellDashboardBundle/Resources/config/routing.yml"
+    prefix:   /dashboard
+
+silnin_share_tell_frontpage:
+    resource: "@SilninShareTellFrontpageBundle/Resources/config/routing.yml"
     prefix:   /
 
-browser:
-    resource: "@BrowserBundle/Resources/config/routing.yml"
-    prefix:   /browse
-
-user:
-    resource: "@UserBundle/Resources/config/routing.yml"
-    prefix:   /user
-
-frontpage:
-    resource: "@FrontpageBundle/Resources/config/routing.yml"
-    prefix:   /
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
