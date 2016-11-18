@@ -1,3 +1,11 @@
-silnin_share_tell_story_homepage:
-    path:     /
-    defaults: { _controller: SilninShareTellStoryBundle:Default:index }
+silnin_share_tell_story_join:
+    path:   /join/{reference}
+    defaults: { _controller: silnin_share_tell_story.default_controller:joinAction }
+
+silnin_share_tell_story_play:
+    path:   /{reference}
+    defaults: { _controller: silnin_share_tell_story.default_controller:playAction }
+
+#silnin_share_tell_story_homepage:
+#    path:     /
+#    defaults: { _controller: SilninShareTellStoryBundle:Default:index }

@@ -3,9 +3,10 @@
 use Behat\Behat\Hook\Scope\AfterScenarioScope;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
-use Behat\Testwork\Hook\Scope\BeforeSuiteScope;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityNotFoundException;
+use Silnin\ShareTell\StoryBundle\Entity\Contribution;
+use Silnin\ShareTell\StoryBundle\Entity\Story;
 use Silnin\UserBundle\Entity\User;
 use Silnin\UserBundle\Repository\UserRepository;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -29,6 +30,12 @@ class FeatureContext extends MinkContext implements KernelAwareContext
     /** @var User */
     private $otherPlayer;
 
+    /** @var Story */
+    private $myStory;
+
+    /** @var Contribution */
+    private $myContribution;
+
     /**
      * @param KernelInterface $kernel
      */
@@ -48,19 +55,60 @@ class FeatureContext extends MinkContext implements KernelAwareContext
         $this->fillField('fos_user_registration_form_plainPassword_first', self::PASSWORD);
         $this->fillField('fos_user_registration_form_plainPassword_second', self::PASSWORD);
         $this->pressButton('registration.submit');
-
         $this->rememberMe($email);
     }
 
     /**
      * @param string $emailAddress
+     * @throws EntityNotFoundException
      */
     private function rememberMe(
         $emailAddress = self::EMAIL
     ) {
         /** @var UserRepository $repo */
         $repo = $this->kernel->getContainer()->get('silnin.user_repository');
+
         $this->me = $repo->getByEmail($emailAddress);
+
+        if (!($this->me instanceof User) || !$this->me->getId()) {
+            throw new EntityNotFoundException('Could not find user ' . self::EMAIL);
+        }
+    }
+
+    /**
+     * @Given /^there is a contribution "([^"]*)"$/
+     */
+    public function thereIsAContribution($contributionName)
+    {
+        $repo = $this->kernel->getContainer()->get('silnin.contribution_repository');
+        $contribution = $repo->createContribution(
+            $this->myStory,
+            $this->me,
+            $contributionName
+        );
+
+        if (!($contribution->getId())) {
+            throw new EntityNotFoundException('Contribution was not created');
+        }
+
+        $this->myContribution = $contribution;
+    }
+
+    /**
+     * @Given /^I am registered$/
+     */
+    public function iAmRegistered()
+    {
+        $this->iRegister(self::EMAIL);
+    }
+
+    /**
+     * @Given /^I am logged out$/
+     */
+    public function iAmLoggedOut()
+    {
+        $this->visit('/logout');
+        $this->assertPageAddress('/');
     }
 
     /**
@@ -85,7 +133,7 @@ class FeatureContext extends MinkContext implements KernelAwareContext
     }
 
     /**
-     * @Given /^there is is a public story named "([^"]*)" available$/
+     * @Given /^there is a public story named "([^"]*)" available$/
      */
     public function thereIsIsAPublicStoryNamedAvailable($storyName)
     {
@@ -96,6 +144,7 @@ class FeatureContext extends MinkContext implements KernelAwareContext
         $stories = $repo->getPublicActiveStories();
         foreach ($stories as $possibleStory) {
             if ($possibleStory->getTitle() == $storyName) {
+                $this->myStory = $possibleStory;
                 return;
             }
         }
@@ -108,6 +157,8 @@ class FeatureContext extends MinkContext implements KernelAwareContext
         if (!$story->getId()) {
             throw new EntityNotFoundException('Story was not created');
         }
+
+        $this->myStory = $story;
     }
 
     private function createAnotherPlayer()

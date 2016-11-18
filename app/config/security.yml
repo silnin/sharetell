@@ -28,5 +28,5 @@ security:
 #        - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
 #        - { path: ^/admin/, role: ROLE_ADMIN }
         - { path: ^/browse, role: ROLE_USER }
-        - { path: ^/play, role: ROLE_USER }
+        - { path: ^/story, role: ROLE_USER }
         - { path: ^/, role: IS_AUTHENTICATED_ANONYMOUSLY }

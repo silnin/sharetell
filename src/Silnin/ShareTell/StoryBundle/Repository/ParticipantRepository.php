@@ -1,6 +1,10 @@
 <?php
 
 namespace Silnin\ShareTell\StoryBundle\Repository;
+use DateTime;
+use Silnin\ShareTell\StoryBundle\Entity\Participant;
+use Silnin\ShareTell\StoryBundle\Entity\Story;
+use Silnin\UserBundle\Entity\User;
 
 /**
  * ParticipantRepository
@@ -10,4 +14,26 @@ namespace Silnin\ShareTell\StoryBundle\Repository;
  */
 class ParticipantRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function createParticipant(User $user, Story $story)
+    {
+        $participant = new Participant();
+        $participant->setJoined(new DateTime());
+        $participant->setStatus('active');
+        $participant->setStory($story);
+        $participant->setUser($user);
+
+        $this->getEntityManager()->persist($participant);
+        $this->getEntityManager()->flush();
+
+        return $participant;
+    }
+
+    public function getParticipantsForStory($story)
+    {
+        return $this->getEntityManager()->getRepository('SilninShareTellStoryBundle:Participant')->findBy(
+            [
+                'story' => $story
+            ]
+        );
+    }
 }

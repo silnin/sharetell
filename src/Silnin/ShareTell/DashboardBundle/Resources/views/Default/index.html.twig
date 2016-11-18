@@ -1,13 +1,17 @@
 <html>
 <body>
 
-Board of dash!
+Welcome to the Storytime, traveller.
 
 <h1>Stories</h1>
 <ul>
     {% for story in stories %}
-        <li>{{ story.title }}</li>
+        <li><a href="/story/join/{{ story.reference }}">{{ story.title }}</a></li>
     {% endfor %}
 </ul>
+
+<br />
+<a href="/story/new">Start a new story!</a>
+
 </body>
 </html>

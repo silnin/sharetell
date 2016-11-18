@@ -10,11 +10,6 @@ use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 class DefaultController extends Controller
 {
     /**
-     * @var UserRepository
-     */
-    private $userRepository;
-
-    /**
      * @var EngineInterface
      */
     private $twigEngine;
@@ -37,7 +32,6 @@ class DefaultController extends Controller
     public function indexAction()
     {
         $params = [];
-//        $params['username'] = $this->userRepository->getByEmail('gft_bak@hotmail.com')->getUsername();
         $params['stories'] = $this->storyRepository->getPublicActiveStories();
         return $this->twigEngine->renderResponse('SilninShareTellDashboardBundle:Default:index.html.twig', $params);
     }

@@ -3,6 +3,7 @@
 namespace Silnin\ShareTell\StoryBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Uuid;
 use Silnin\UserBundle\Entity\User;
 
 /**
@@ -20,6 +21,19 @@ class Story
     const TYPE_PUBLIC = 'public';
     const TYPE_PRIVATE = 'private';
     const TYPE_HIDDEN = 'hidden';
+
+    /**
+     *
+     */
+    public function __construct()
+    {
+        $this->reference = $this->generateRandomID();
+    }
+
+    function generateRandomID()
+    {
+        return hash('crc32b', Uuid::uuid4());
+    }
 
     /**
      * @var int
@@ -62,6 +76,13 @@ class Story
      * @ORM\Column(name="status", type="string", length=255)
      */
     private $status;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="reference", type="string", length=255)
+     */
+    private $reference;
 
     /**
      * @var \DateTime
@@ -239,6 +260,22 @@ class Story
     public function setCreator($creator)
     {
         $this->creator = $creator;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReference()
+    {
+        return $this->reference;
+    }
+
+    /**
+     * @param string $reference
+     */
+    public function setReference($reference)
+    {
+        $this->reference = $reference;
     }
 
 

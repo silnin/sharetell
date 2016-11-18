@@ -1,0 +1,56 @@
+<html>
+<head>
+    <style>
+        /* Tooltip container */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+        }
+
+        /* Tooltip text */
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            padding: 5px 0;
+            border-radius: 6px;
+
+            /* Position the tooltip text - see examples below! */
+            position: absolute;
+            z-index: 1;
+        }
+
+        /* Show the tooltip text when you mouse over the tooltip container */
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+
+<h1>{{ story. title }}</h1>
+
+<div>
+    <div class="contribution">
+        {% for contribution in contributions %}
+            <div class="tooltip">{{ contribution.content }}
+                <span class="tooltiptext">Added by {{ contribution.author.username }}</span>
+            </div>&nbsp;
+        {% endfor %}
+    </div>
+</div>
+
+<div>
+    <h2>Participants</h2>
+    <ul>
+        {% for participant in participants %}
+            <li><a href="/profile/{{ participant.id }}">{{ participant.user.username }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+
+</body>
+</html>

@@ -10,10 +10,11 @@ Feature: Authorization
     Then I should be on "/register/confirmed"
 
   Scenario: login
-    Given I am logged in
-    And I am on "/logout"
+    Given I am registered
+    And I am logged out
     When I am on "/login"
     And I fill in the following:
       | _username | bddtest@silnin.nl |
-      | _password | test              |
-    Then I am on "/dashboard"
+      | _password | test |
+    And I press "_submit"
+    Then I should be on "/dashboard/"

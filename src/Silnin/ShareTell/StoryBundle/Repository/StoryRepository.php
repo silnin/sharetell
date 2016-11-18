@@ -91,4 +91,13 @@ class StoryRepository extends \Doctrine\ORM\EntityRepository
 
         return $story;
     }
+
+    public function getStoryByReference($reference)
+    {
+        return $this->getEntityManager()->getRepository('SilninShareTellStoryBundle:Story')->findOneBy(
+            [
+                'reference' => $reference
+            ]
+        );
+    }
 }

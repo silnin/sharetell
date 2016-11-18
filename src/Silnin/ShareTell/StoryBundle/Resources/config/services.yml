@@ -4,10 +4,25 @@ services:
     class: Silnin\ShareTell\StoryBundle\Repository\StoryRepository
     factory: ['@doctrine.orm.default_entity_manager', getRepository]
     arguments:
-        - Silnin\ShareTell\StoryBundle\Entity\Story
+      - Silnin\ShareTell\StoryBundle\Entity\Story
 
   silnin.participant_repository:
     class: Silnin\ShareTell\StoryBundle\Repository\ParticipantRepository
     factory: ['@doctrine.orm.default_entity_manager', getRepository]
     arguments:
-        - Silnin\ShareTell\StoryBundle\Entity\Participant
+      - Silnin\ShareTell\StoryBundle\Entity\Participant
+
+  silnin.contribution_repository:
+    class: Silnin\ShareTell\StoryBundle\Repository\ContributionRepository
+    factory: ['@doctrine.orm.default_entity_manager', getRepository]
+    arguments:
+      - Silnin\ShareTell\StoryBundle\Entity\Contribution
+
+  silnin_share_tell_story.default_controller:
+    class: Silnin\ShareTell\StoryBundle\Controller\DefaultController
+    arguments:
+    - "@templating"
+    - "@silnin.story_repository"
+    - "@silnin.participant_repository"
+    - "@security.token_storage"
+    - "@silnin.contribution_repository"
