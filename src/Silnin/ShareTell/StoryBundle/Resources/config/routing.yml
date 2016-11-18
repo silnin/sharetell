@@ -10,13 +10,16 @@ silnin_share_tell_story_new:
     path:   /new
     defaults: { _controller: silnin_share_tell_story.default_controller:newAction }
 
-silnin_share_tell_story_create_confirmation:
-    path:   /confirmation
-    defaults: { _controller: silnin_share_tell_story.default_controller:createConfirmAction }
-
 silnin_share_tell_story_play:
     path:   /{reference}
+    methods: ["GET"]
     defaults: { _controller: silnin_share_tell_story.default_controller:playAction }
+
+silnin_share_tell_story_update:
+    path:   /{reference}
+    methods: ["PUT"]
+    defaults: { _controller: silnin_share_tell_story.default_controller:editAction }
+
 
 #silnin_share_tell_story_homepage:
 #    path:     /

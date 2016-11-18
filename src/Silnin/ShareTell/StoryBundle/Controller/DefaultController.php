@@ -2,6 +2,7 @@
 
 namespace Silnin\ShareTell\StoryBundle\Controller;
 
+use DateTime;
 use InvalidArgumentException;
 use Proxies\__CG__\Silnin\ShareTell\StoryBundle\Entity\Participant;
 use Silnin\ShareTell\StoryBundle\Entity\Contribution;
@@ -10,6 +11,7 @@ use Silnin\ShareTell\StoryBundle\Repository\ContributionRepository;
 use Silnin\ShareTell\StoryBundle\Repository\ParticipantRepository;
 use Silnin\ShareTell\StoryBundle\Repository\StoryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -39,6 +41,10 @@ class DefaultController extends Controller
      * @var ContributionRepository
      */
     private $contributionRepository;
+    /**
+     * @var FormFactory
+     */
+    private $formFactory;
 
     /**
      * @param EngineInterface $twigEngine
@@ -46,19 +52,22 @@ class DefaultController extends Controller
      * @param ParticipantRepository $participantRepository
      * @param TokenStorageInterface $tokenStorage
      * @param ContributionRepository $contributionRepository
+     * @param FormFactory $formFactory
      */
     public function __construct(
         EngineInterface $twigEngine,
         StoryRepository $storyRepository,
         ParticipantRepository $participantRepository,
         TokenStorageInterface $tokenStorage,
-        ContributionRepository $contributionRepository
+        ContributionRepository $contributionRepository,
+        FormFactory $formFactory
     ) {
         $this->twigEngine = $twigEngine;
         $this->participantRepository = $participantRepository;
         $this->storyRepository = $storyRepository;
         $this->tokenStorage = $tokenStorage;
         $this->contributionRepository = $contributionRepository;
+        $this->formFactory = $formFactory;
     }
 
     public function indexAction()
@@ -83,6 +92,24 @@ class DefaultController extends Controller
 
     public function newAction()
     {
+        /** @var User $me */
+        $me = $this->tokenStorage->getToken()->getUser();
+
+        // create a task and give it some dummy data for this example
+        $story = new Story();
+        $story->setTitle('Once upon a time...');
+        $story->setCreated(new DateTime());
+        $story->setModified(new DateTime());
+        $story->setCreator($me);
+        $story->setType('public');
+        $story->setStatus('active');
+
+        $this->storyRepository->persist($story);
+
+        // add 1st participant
+        $this->participantRepository->createParticipant($me, $story);
+
+        return $this->redirect('/dashboard');
     }
 
     public function playAction($reference)
@@ -129,6 +156,24 @@ class DefaultController extends Controller
         return $participants[0]->getUser();
     }
 
+    public function editAction($reference, Request $request)
+    {
+        $requestData = json_decode($request->getContent(), true);
+
+        $story = $this->storyRepository->getStoryByReference($reference);
+
+        if ($requestData['title']) {
+            $story->setTitle($requestData['title']);
+        }
+
+        $this->storyRepository->persist($story);
+
+        $response = [];
+        $response['storyTitle'] = $story->getTitle();
+
+        return new Response(json_encode($response), 200);
+    }
+
     private function getLastContributor(array $participants, array $contributions)
     {
         $nextContributor = null;
@@ -137,6 +182,11 @@ class DefaultController extends Controller
 
         /** @var Contribution $lastPost */
         $lastPost = end($contributions);
+
+        if (!$lastPost) {
+            return null;
+        }
+
         $lastAuthor = $lastPost->getAuthor();
 
         /** @var Participant $participant */

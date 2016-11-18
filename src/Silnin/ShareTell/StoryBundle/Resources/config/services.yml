@@ -26,3 +26,4 @@ services:
     - "@silnin.participant_repository"
     - "@security.token_storage"
     - "@silnin.contribution_repository"
+    - "@form.factory"

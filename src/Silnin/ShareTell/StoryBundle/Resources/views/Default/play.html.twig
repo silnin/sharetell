@@ -28,10 +28,51 @@
             visibility: visible;
         }
     </style>
+
+    <script type="application/javascript">
+
+        function submitTitle(reference, title) {
+
+            var data = JSON.stringify(
+                    { "title": title }
+            );
+
+            var url = "/story/" + reference;
+            var client = new XMLHttpRequest();
+            client.open("PUT", url, true);
+            client.setRequestHeader("Content-Type", "application/json");
+            client.onload = function (e) {
+                if (client.readyState === 4) {
+                    if (client.status === 200) {
+                        var result = JSON.parse(client.response);
+                        console.log("the title is " + result.storyTitle);
+                        console.log(client.response);
+                        document.getElementById('title_edit').value = result.storyTitle;
+                    } else {
+                        console.error(client.statusText);
+                    }
+                }
+            };
+            client.onerror = function (e) {
+                console.error(client.statusText);
+            };
+
+            client.send(data);
+
+        }
+    </script>
 </head>
 <body>
 
-<h1>{{ story. title }}</h1>
+<div class="storyTitle" id="storyTitleBlock">
+    {% if story.creator.id == me.id %}
+        <form>
+            <input type="text" name="title_edit" id="title_edit" value="{{ story.title }}" onchange='submitTitle("{{ story.reference }}", this.value);' />
+        </form>
+    {% else %}
+        <h1>{{ story.title }}</h1>
+    {% endif %}
+</div>
 
 <div>
     <div class="contribution">

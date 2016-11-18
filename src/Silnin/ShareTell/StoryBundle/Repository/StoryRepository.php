@@ -121,7 +121,7 @@ class StoryRepository extends \Doctrine\ORM\EntityRepository
      * Return one Story
      *
      * @param $reference
-     * @return Story[]
+     * @return Story
      */
     public function getStoryByReference($reference)
     {
@@ -154,5 +154,13 @@ class StoryRepository extends \Doctrine\ORM\EntityRepository
                 ]
             );
         }
+    }
+
+    public function persist(Story $story)
+    {
+        $this->getEntityManager()->persist($story);
+        $this->getEntityManager()->flush();
+
+        return $story;
     }
 }
