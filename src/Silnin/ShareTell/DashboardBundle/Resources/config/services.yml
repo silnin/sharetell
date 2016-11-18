@@ -6,5 +6,5 @@ services:
   silnin_share_tell_dashboard.default_controller:
     class: Silnin\ShareTell\DashboardBundle\Controller\DefaultController
     arguments:
-    - "@silnin.user_repository"
     - "@templating"
+    - "@silnin.story_repository"

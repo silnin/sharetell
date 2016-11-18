@@ -3,6 +3,7 @@
 namespace Silnin\UserBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use FOS\UserBundle\Model\UserManagerInterface;
 use Silnin\UserBundle\Entity\User;
 
 /**
@@ -13,6 +14,19 @@ use Silnin\UserBundle\Entity\User;
  */
 class UserRepository extends EntityRepository
 {
+    /**
+     * @var UserManagerInterface
+     */
+    private $userManager;
+
+    /**
+     * @param UserManagerInterface $userManager
+     */
+    public function setUserManager(UserManagerInterface $userManager)
+    {
+        $this->userManager = $userManager;
+    }
+
     /**
      * @param string $email
      */
@@ -45,5 +59,23 @@ class UserRepository extends EntityRepository
             ]
         );
 
+    }
+
+    /**
+     * @param $email
+     * @param $username
+     * @param $password
+     * @return User
+     */
+    public function createUser($email, $username, $password)
+    {
+        $user = $this->userManager->createUser();
+        $user->setEmail($email);
+        $user->setUsername($username);
+        $user->setPassword($password);
+
+        $this->userManager->updateUser($user);
+
+        return $user;
     }
 }

@@ -1,5 +1,13 @@
-Hello World!
+<html>
+<body>
 
 Board of dash!
 
-User ought to be: {{ username }}
+<h1>Stories</h1>
+<ul>
+    {% for story in stories %}
+        <li>{{ story.title }}</li>
+    {% endfor %}
+</ul>
+</body>
+</html>

@@ -1,4 +1,13 @@
 services:
-#    silnin_share_tell_story.example:
-#        class: Silnin\ShareTell\StoryBundle\Example
-#        arguments: ["@service_id", "plain_value", "%parameter%"]
+
+  silnin.story_repository:
+    class: Silnin\ShareTell\StoryBundle\Repository\StoryRepository
+    factory: ['@doctrine.orm.default_entity_manager', getRepository]
+    arguments:
+        - Silnin\ShareTell\StoryBundle\Entity\Story
+
+  silnin.participant_repository:
+    class: Silnin\ShareTell\StoryBundle\Repository\ParticipantRepository
+    factory: ['@doctrine.orm.default_entity_manager', getRepository]
+    arguments:
+        - Silnin\ShareTell\StoryBundle\Entity\Participant

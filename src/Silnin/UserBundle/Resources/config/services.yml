@@ -13,3 +13,6 @@ services:
     factory: ['@doctrine.orm.default_entity_manager', getRepository]
     arguments:
         - Silnin\UserBundle\Entity\User
+    calls:
+      - ["setUserManager", ["@fos_user.user_manager"]]
+
