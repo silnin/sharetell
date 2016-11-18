@@ -28,11 +28,20 @@ class ParticipantRepository extends \Doctrine\ORM\EntityRepository
         return $participant;
     }
 
-    public function getParticipantsForStory($story)
+    public function getParticipantsForStory(Story $story)
     {
         return $this->getEntityManager()->getRepository('SilninShareTellStoryBundle:Participant')->findBy(
             [
                 'story' => $story
+            ]
+        );
+    }
+
+    public function getParticipantsForUser(User $user)
+    {
+        return $this->getEntityManager()->getRepository('SilninShareTellStoryBundle:Participant')->findBy(
+            [
+                'user' => $user
             ]
         );
     }

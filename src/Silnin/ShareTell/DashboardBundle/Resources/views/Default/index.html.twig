@@ -3,12 +3,30 @@
 
 Welcome to the Storytime, traveller.
 
-<h1>Stories</h1>
+{% if joined_stories is not empty %}
+<h1>Your Stories</h1>
+(well...partially yours, anyway)
 <ul>
-    {% for story in stories %}
-        <li><a href="/story/join/{{ story.reference }}">{{ story.title }}</a></li>
+    {% for joined_story in joined_stories %}
+        <li><a href="/story/{{ joined_story.reference }}">{{ joined_story.title }}</a></li>
     {% endfor %}
 </ul>
+{% else %}
+    You haven't joined any stories yet. Wat are you waiting for? Start word-jamming!<br/>
+    <a href="/story/new">Start a new story!</a>
+{% endif %}
+<br/><br/>
+
+{% if public_stories is not empty %}
+<h1>Public Stories</h1>
+<ul>
+    {% for public_story in public_stories %}
+        <li><a href="/story/join/{{ public_story.reference }}">{{ public_story.title }}</a></li>
+    {% endfor %}
+</ul>
+{% else %}
+    Alas! There currently aren't any public stories available to join. Maybe you should create one?<br/>
+{% endif %}
 
 <br />
 <a href="/story/new">Start a new story!</a>

@@ -2,6 +2,10 @@
 
 namespace Silnin\ShareTell\StoryBundle\Controller;
 
+use InvalidArgumentException;
+use Proxies\__CG__\Silnin\ShareTell\StoryBundle\Entity\Participant;
+use Silnin\ShareTell\StoryBundle\Entity\Contribution;
+use Silnin\ShareTell\StoryBundle\Entity\Story;
 use Silnin\ShareTell\StoryBundle\Repository\ContributionRepository;
 use Silnin\ShareTell\StoryBundle\Repository\ParticipantRepository;
 use Silnin\ShareTell\StoryBundle\Repository\StoryRepository;
@@ -77,11 +81,15 @@ class DefaultController extends Controller
         return $this->redirect('/story/' . $reference);
     }
 
+    public function newAction()
+    {
+    }
+
     public function playAction($reference)
     {
         $params = [];
 
-        // get story from repo
+        // get story from url reference key
         $story = $this->storyRepository->getStoryByReference($reference);
 
         // get contributions from repo
@@ -90,10 +98,88 @@ class DefaultController extends Controller
         // get participants from repo
         $participants = $this->participantRepository->getParticipantsForStory($story);
 
-        $params['story'] = $story;
-        $params['contributions'] = $contributions;
-        $params['participants'] = $participants;
+        $params['me']               = $this->tokenStorage->getToken()->getUser();
+        $params['turn']             = $this->determineTurn($participants, $contributions);
+        $params['story']            = $story;
+        $params['contributions']    = $contributions;
+        $params['participants']     = $participants;
 
         return $this->twigEngine->renderResponse('SilninShareTellStoryBundle:Default:play.html.twig', $params);
     }
+
+    private function determineTurn(
+        array $participants,
+        array $contributions
+    ) {
+
+        if (count($participants) < 1) {
+            throw new InvalidArgumentException('No participants defined for this game');
+        }
+
+        $lastContributorPosition = $this->getLastContributor($participants, $contributions);
+
+        if (!is_null($lastContributorPosition)
+            && array_key_exists($lastContributorPosition+1, $participants)
+        ) {
+            //@todo consider status of participant
+            return $participants[$lastContributorPosition+1]->getUser();
+        }
+
+        //@todo consider status of participant
+        return $participants[0]->getUser();
+    }
+
+    private function getLastContributor(array $participants, array $contributions)
+    {
+        $nextContributor = null;
+
+        // determine author of last contribution
+
+        /** @var Contribution $lastPost */
+        $lastPost = end($contributions);
+        $lastAuthor = $lastPost->getAuthor();
+
+        /** @var Participant $participant */
+        foreach ($participants as $key => $participant) {
+
+            $lastContributorPosition = null;
+            if ($lastAuthor->getId() == $participant->getUser()->getId()) {
+                // this is the last contributor, get the next guy in line
+                return $key;
+            }
+        }
+
+        return null;
+    }
+
+    public function contributeAction($reference, Request $request)
+    {
+        /** @var Story $story */
+        $story = $this->storyRepository->getStoryByReference($reference);
+
+        /** @var User $me */
+        $me = $this->tokenStorage->getToken()->getUser();
+
+        $content = $request->get('contribution');
+        $contribution = $this->contributionRepository->createContribution($story, $me, $content);
+
+        if (!$contribution->getId()) {
+            // failed
+            return new Response(500, 'So sorry! We could not process your contribution');
+        }
+
+        // return back to play
+        return $this->redirect('/story/' . $reference);
+    }
+
+    public function createAction()
+    {
+    }
+
+//    public function createAction(Request $request)
+//    {
+//        $this->storyRepository->createStory(
+//
+//        );
+//    }
 }

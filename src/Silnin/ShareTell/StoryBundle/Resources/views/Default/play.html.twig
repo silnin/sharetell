@@ -38,10 +38,23 @@
         {% for contribution in contributions %}
             <div class="tooltip">{{ contribution.content }}
                 <span class="tooltiptext">Added by {{ contribution.author.username }}</span>
-            </div>&nbsp;
+            </div>
         {% endfor %}
     </div>
 </div>
+
+{% if turn.id == me.id %}
+    <div>
+        <form action="/story/{{ story.reference }}/contribute" method="post" name="contributeForm">
+            <input type="textarea" name="contribution" >
+            <input type="submit" value="share and tell!" >
+        </form>
+    </div>
+{% else %}
+    <div>
+        {{ turn.username }} is now pondering how this story will continue ...
+    </div>
+{% endif %}
 
 <div>
     <h2>Participants</h2>

@@ -2,6 +2,7 @@
 
 namespace Silnin\ShareTell\StoryBundle\Repository;
 use DateTime;
+use Silnin\ShareTell\StoryBundle\Entity\Participant;
 use Silnin\ShareTell\StoryBundle\Entity\Story;
 use Silnin\UserBundle\Entity\User;
 
@@ -24,6 +25,30 @@ class StoryRepository extends \Doctrine\ORM\EntityRepository
 
         return $stories;
     }
+
+    public function getPublicUnjoinedStories(User $user, $limit = 20)
+    {
+        $allPublic = $this->getPublicActiveStories($limit);
+        $filteredGames = [];
+
+        /** @var Story $publicGame */
+        foreach ($allPublic as $publicGame) {
+            // check if none of the participants is me.
+
+            /** @var Participant $participant */
+            foreach ($publicGame->getParticipants() as $participant) {
+                if ($participant->getUser()->getId() == $user->getId()) {
+                    // don't add this game
+                    continue;
+                }
+
+                $filteredGames[] = $publicGame;
+            }
+        }
+
+        return $filteredGames;
+    }
+
 
     public function deleteStoriesFromUser(User $user)
     {
@@ -92,6 +117,12 @@ class StoryRepository extends \Doctrine\ORM\EntityRepository
         return $story;
     }
 
+    /**
+     * Return one Story
+     *
+     * @param $reference
+     * @return Story[]
+     */
     public function getStoryByReference($reference)
     {
         return $this->getEntityManager()->getRepository('SilninShareTellStoryBundle:Story')->findOneBy(
@@ -99,5 +130,29 @@ class StoryRepository extends \Doctrine\ORM\EntityRepository
                 'reference' => $reference
             ]
         );
+    }
+
+    /**
+     * Return an array of Stories
+     *
+     * @param User $user
+     * @return array
+     */
+    public function getJoinedStories(User $user)
+    {
+        $participants = $this->getEntityManager()->getRepository('SilninShareTellStoryBundle:Participant')->findBy(
+            [
+                'user' => $user
+            ]
+        );
+
+        /** @var Participant $participant */
+        foreach ($participants as $participant) {
+            return $this->getEntityManager()->getRepository('SilninShareTellStoryBundle:Story')->findBy(
+                [
+                    'id' => $participant->getId()
+                ]
+            );
+        }
     }
 }

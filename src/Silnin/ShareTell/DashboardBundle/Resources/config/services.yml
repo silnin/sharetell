@@ -8,3 +8,4 @@ services:
     arguments:
     - "@templating"
     - "@silnin.story_repository"
+    - "@security.token_storage"
