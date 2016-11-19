@@ -1,0 +1,49 @@
+sharetell TODO and ideas list
+
+These are not promises :)
+
+prio steps
+- create story: add participants, set word limit, set timeout?
+  - contribution must be within word limit
+  - word counter for text field: error when in excess
+- decent markup (web)
+- more markup options for contributing (and how to store that? WYSIWYG?
+- menu system for /story and /dashboard urls?
+- example on frontpage (finished story)
+- api
+
+ideas
+- more js, less twig (react?) / realtime refresh?
+- timeout for idleness (turns to next person) (after x amount of idle rounds or timeouts, the story ends)
+- more tests
+- inline story contributing (like a word document?)
+- upload pictures for contribution
+
+small steps:
+- menu system for /story and /dashboard urls?
+- validate contributions
+- google analytics
+- register/confirmed redirects to dashboard
+- welcome message to new users
+- private games
+- reverse turn order (from high to lowest
+- don't allow spam of new story creations/contributions
+- contribute: make sure participant is authenticated and authorized (is it his turn?)
+- block IP (range)
+- notifications, set by screen, mail
+  - note when story is contributed, your turn, or invited, timeout warning, timed out
+- invite system
+  - invites: participant is not activated until accepted invite
+
+- show case best stories on frontpage
+
+
+intermediate steps:
+- API all crud actions of entities
+- rating system for stories and/or participants
+- admin panel
+- moderation per game
+
+big steps:
+- app
+    - push notifications
