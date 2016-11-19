@@ -9,7 +9,7 @@ Mind that this is very far from complete at this moment.
 
 
 # Live demo
-You can try it out on <a href="http://sharetell.silnin.nl">sharetell.silnin.nl</a>
+You can try it out on <a href="http://sharetell.silnin.nl" target="_blank">sharetell.silnin.nl</a>
 
 # Installation
 I'll put up a proper instruction here some day.
