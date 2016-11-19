@@ -3,6 +3,7 @@
 namespace Silnin\ShareTell\StoryBundle\Controller;
 
 use DateTime;
+use Exception;
 use InvalidArgumentException;
 use Proxies\__CG__\Silnin\ShareTell\StoryBundle\Entity\Participant;
 use Silnin\ShareTell\StoryBundle\Entity\Contribution;
@@ -159,6 +160,7 @@ class DefaultController extends Controller
     public function editAction($reference, Request $request)
     {
         $requestData = json_decode($request->getContent(), true);
+//        return new Response(json_encode($requestData, 200));
 
         $story = $this->storyRepository->getStoryByReference($reference);
 
@@ -166,10 +168,23 @@ class DefaultController extends Controller
             $story->setTitle($requestData['title']);
         }
 
-        $this->storyRepository->persist($story);
+        try {
+            $this->storyRepository->persist($story);
+        } catch (Exception $e) {
+            return new Response(
+                json_encode(
+                    [
+                        'error' => $e->getMessage()
+                    ]
+                ),
+                400
+            );
+        }
 
         $response = [];
-        $response['storyTitle'] = $story->getTitle();
+        if ($requestData['title']) {
+            $response['title'] = $story->getTitle();
+        }
 
         return new Response(json_encode($response), 200);
     }

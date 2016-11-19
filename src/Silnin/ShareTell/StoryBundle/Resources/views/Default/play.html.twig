@@ -31,47 +31,101 @@
 
     <script type="application/javascript">
 
-        function submitTitle(reference, title) {
+        var storyReference;
+        var title;
 
-            var data = JSON.stringify(
-                    { "title": title }
-            );
+        function setup()
+        {
+            title = "{{ story.title }}";
+            storyReference = "{{ story.reference }}";
+            showTitle();
+        }
 
-            var url = "/story/" + reference;
+        /**
+         * @param value
+         */
+        function editTitle(value)
+        {
+            title = value;
+            updateStoryProperty('title', value);
+            showEditableTitle();
+        }
+
+        /**
+         * @param property
+         * @param value
+         */
+        function updateStoryProperty(property, value)
+        {
+            var data = {};
+            data[property] = value;
+
+            var body = JSON.stringify(data);
+            var url = "/story/" + storyReference;
+            var method = "PUT";
+
+            sendRest(url, body, method);
+        }
+
+        /**
+         * @param url string
+         * @param body string
+         * @param method string
+         */
+        function sendRest(url, body, method)
+        {
             var client = new XMLHttpRequest();
-            client.open("PUT", url, true);
+            client.open(method, url, true);
             client.setRequestHeader("Content-Type", "application/json");
             client.onload = function (e) {
                 if (client.readyState === 4) {
                     if (client.status === 200) {
                         var result = JSON.parse(client.response);
-                        console.log("the title is " + result.storyTitle);
-                        console.log(client.response);
-                        document.getElementById('title_edit').value = result.storyTitle;
                     } else {
                         console.error(client.statusText);
+                        alert("Could not update!");
                     }
                 }
             };
             client.onerror = function (e) {
                 console.error(client.statusText);
+                alert("Could not update!");
             };
 
-            client.send(data);
-
+            client.send(body);
         }
+
+        function showUneditableTitle()
+        {
+            document.getElementById("storyTitleBlock").innerHTML = "<h1>" + title + "</h1>";
+        }
+
+        function showEditingTitle()
+        {
+            document.getElementById("storyTitleBlock").innerHTML = "<input type=\"text\" name=\"title_edit\" id=\"title_edit\" value=\"" + title + "\" onchange='editTitle(this.value);' onfocusout='showEditableTitle();'>";
+            document.getElementById("title_edit").focus();
+        }
+
+        function showEditableTitle()
+        {
+            document.getElementById("storyTitleBlock").innerHTML = "<h1><a onclick=\"showEditingTitle()\">" + title + "</a></h1>";
+        }
+
+        function showTitle()
+        {
+            if ("{{ story.creator.id }}" == "{{ me.id }}") {
+                showEditableTitle();
+                return;
+            }
+
+            showUneditableTitle();
+        }
+
     </script>
 </head>
-<body>
+<body onload="setup()">
 
 <div class="storyTitle" id="storyTitleBlock">
-    {% if story.creator.id == me.id %}
-        <form>
-            <input type="text" name="title_edit" id="title_edit" value="{{ story.title }}" onchange='submitTitle("{{ story.reference }}", this.value);' />
-        </form>
-    {% else %}
-        <h1>{{ story.title }}</h1>
-    {% endif %}
 </div>
 
 <div>
