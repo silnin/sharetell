@@ -1,3 +1,8 @@
 silnin_share_tell_frontpage_homepage:
     path:     /
-    defaults: { _controller: SilninShareTellFrontpageBundle:Default:index }
+    defaults: { _controller: silnin_share_tell_frontpage.default_controller:indexAction }
+
+silnin_share_tell_frontpage_read_story:
+    path:   /read/{reference}
+    methods: ["GET"]
+    defaults: { _controller: silnin_share_tell_frontpage.default_controller:readAction }

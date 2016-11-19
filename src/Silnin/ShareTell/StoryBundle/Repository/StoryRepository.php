@@ -39,11 +39,11 @@ class StoryRepository extends \Doctrine\ORM\EntityRepository
             foreach ($publicGame->getParticipants() as $participant) {
                 if ($participant->getUser()->getId() == $user->getId()) {
                     // don't add this game
-                    continue;
+                    continue 2;
                 }
-
-                $filteredGames[] = $publicGame;
             }
+
+            $filteredGames[] = $publicGame;
         }
 
         return $filteredGames;
@@ -74,24 +74,6 @@ class StoryRepository extends \Doctrine\ORM\EntityRepository
                 'creator' => $user
             ]
         );
-    }
-
-    public function getAllStoriesParticipatedByUser(User $user)
-    {
-
-
-
-        return $this->getEntityManager()->getRepository('SilninShareTellStoryBundle:Story')->findBy(
-            [
-                'creator' => $user
-            ]
-        );
-    }
-
-
-    public function getTopRated($limit)
-    {
-
     }
 
     /**
@@ -136,9 +118,10 @@ class StoryRepository extends \Doctrine\ORM\EntityRepository
      * Return an array of Stories
      *
      * @param User $user
+     * @param bool $filterOutCreated
      * @return array
      */
-    public function getJoinedStories(User $user)
+    public function getJoinedStories(User $user, $filterOutCreated = false)
     {
         $participants = $this->getEntityManager()->getRepository('SilninShareTellStoryBundle:Participant')->findBy(
             [
@@ -146,14 +129,24 @@ class StoryRepository extends \Doctrine\ORM\EntityRepository
             ]
         );
 
+        $joinedStories = [];
         /** @var Participant $participant */
         foreach ($participants as $participant) {
-            return $this->getEntityManager()->getRepository('SilninShareTellStoryBundle:Story')->findBy(
-                [
-                    'id' => $participant->getId()
-                ]
-            );
+
+            if (!$filterOutCreated) {
+                $joinedStories[] = $participant->getStory();
+                continue;
+            }
+
+            if ($participant->getStory()->getCreator()->getId() == $user->getId()) {
+                // skip it
+                continue;
+            }
+
+            $joinedStories[] = $participant->getStory();
         }
+
+        return $joinedStories;
     }
 
     public function persist(Story $story)

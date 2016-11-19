@@ -16,6 +16,13 @@ class ParticipantRepository extends \Doctrine\ORM\EntityRepository
 {
     public function createParticipant(User $user, Story $story)
     {
+        /** @var Participant $participant */
+        foreach ($story->getParticipants() as $participant) {
+            if ($participant->getUser() == $user) {
+                return $user;
+            }
+        }
+
         $participant = new Participant();
         $participant->setJoined(new DateTime());
         $participant->setStatus('active');

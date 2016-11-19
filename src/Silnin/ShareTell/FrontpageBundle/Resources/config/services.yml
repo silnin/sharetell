@@ -2,3 +2,11 @@ services:
 #    silnin_share_tell_frontpage.example:
 #        class: Silnin\ShareTell\FrontpageBundle\Example
 #        arguments: ["@service_id", "plain_value", "%parameter%"]
+
+  silnin_share_tell_frontpage.default_controller:
+    class: Silnin\ShareTell\FrontpageBundle\Controller\DefaultController
+    arguments:
+      - "@templating"
+      - "@silnin.story_repository"
+      - "@silnin.contribution_repository"
+      - "@silnin.participant_repository"
