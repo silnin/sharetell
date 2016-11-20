@@ -7,5 +7,5 @@ services:
     class: Silnin\ShareTell\DashboardBundle\Controller\DefaultController
     arguments:
     - "@templating"
-    - "@silnin.story_repository"
     - "@security.token_storage"
+    - "@silnin_share_tell_story.api_controller"

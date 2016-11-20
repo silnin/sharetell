@@ -3,6 +3,7 @@
 namespace Silnin\ShareTell\StoryBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 use Silnin\UserBundle\Entity\User;
 
 /**
@@ -11,7 +12,7 @@ use Silnin\UserBundle\Entity\User;
  * @ORM\Table(name="contribution")
  * @ORM\Entity(repositoryClass="Silnin\ShareTell\StoryBundle\Repository\ContributionRepository")
  */
-class Contribution
+class Contribution implements JsonSerializable
 {
     /**
      * @var int
@@ -170,6 +171,33 @@ class Contribution
     public function setAuthor($author)
     {
         $this->author = $author;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @param bool $cascade
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize($cascade = true)
+    {
+        $result = [];
+        $result['id'] = $this->getId();
+        $result['content'] = $this->getContent();
+        $result['status'] = $this->getStatus();
+        $result['created_at'] = $this->getCreated()->format('Y-m-d H:i:s');
+
+        if ($cascade) {
+            $result['author'] = $this->getAuthor()->jsonSerialize();
+            $result['story'] = $this->getStory()->jsonSerialize();
+        } else {
+            $result['author_id'] = $this->getAuthor()->getId();
+            $result['story_id'] = $this->getStory()->getId();
+        }
+
+        return json_encode($result);
     }
 }
 

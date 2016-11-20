@@ -1,14 +1,25 @@
+#silnin_o_auth:
+#    resource: "@SilninOAuthBundle/Resources/config/routing.yml"
+#    prefix:   /
+
 silnin_share_tell_story:
     resource: "@SilninShareTellStoryBundle/Resources/config/routing.yml"
-    prefix:   /story
+    prefix:   /api
 
 silnin_share_tell_dashboard:
     resource: "@SilninShareTellDashboardBundle/Resources/config/routing.yml"
     prefix:   /dashboard
-
-silnin_share_tell_frontpage:
-    resource: "@SilninShareTellFrontpageBundle/Resources/config/routing.yml"
-    prefix:   /
+#
+#silnin_share_tell_frontpage:
+#    resource: "@SilninShareTellFrontpageBundle/Resources/config/routing.yml"
+#    prefix:   /
 
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+
+NelmioApiDocBundle:
+    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
+    prefix:   /api/doc
+
+fos_oauth_server_token:
+    resource: "@FOSOAuthServerBundle/Resources/config/routing/token.xml"

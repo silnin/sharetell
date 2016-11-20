@@ -54,17 +54,7 @@ class DefaultController extends Controller
         $params['me'] = $me;
         $params['public_stories'] = $this->storyRepository->getPublicUnjoinedStories($me);
         $params['joined_stories'] = $this->storyRepository->getJoinedStories($me);
-        $params['created_stories'] = $this->storyRepository->getAllStoriesCreatedByUser($me);
 
-
-//        return new JsonResponse(
-//            [
-//                'pub' => count($params['public_stories']),
-//                'joi' => count($params['joined_stories']),
-//                'cre' => count($params['created_stories'])
-//            ],
-//            200
-//        );
 
         return $this->twigEngine->renderResponse('SilninShareTellDashboardBundle:Default:index.html.twig', $params);
     }

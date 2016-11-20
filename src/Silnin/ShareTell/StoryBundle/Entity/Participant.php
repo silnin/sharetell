@@ -3,6 +3,7 @@
 namespace Silnin\ShareTell\StoryBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 use Silnin\UserBundle\Entity\User;
 
 /**
@@ -11,7 +12,7 @@ use Silnin\UserBundle\Entity\User;
  * @ORM\Table(name="participant")
  * @ORM\Entity(repositoryClass="Silnin\ShareTell\StoryBundle\Repository\ParticipantRepository")
  */
-class Participant
+class Participant implements JsonSerializable
 {
     /**
      * @var int
@@ -111,16 +112,6 @@ class Participant
         return $this->status;
     }
 
-    public function getName()
-    {
-        return $this->user->getUsername();
-    }
-
-    public function getEmail()
-    {
-        return $this->user->getEmail();
-    }
-
     public function getStory()
     {
         return $this->story;
@@ -149,5 +140,30 @@ class Participant
     {
         $this->story = $story;
     }
-}
 
+    /**
+     * Specify data which should be serialized to JSON
+     * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @param bool $cascade
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize($cascade = true)
+    {
+        $result = [];
+        $result['id'] = $this->getId();
+        $result['joined_at'] = $this->getJoined()->format('Y-m-d H:i:s');
+        $result['status'] = $this->getStatus();
+
+        if ($cascade) {
+            $result['user'] = $this->getUser()->jsonSerialize();
+            $result['story'] = $this->getStory()->jsonSerialize(false);
+        } else {
+            $result['user_id'] = $this->getUser()->getId();
+            $result['story_id'] = $this->getStory()->getId();
+        }
+
+        return json_encode($result);
+    }
+}

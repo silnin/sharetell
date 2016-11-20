@@ -2,9 +2,14 @@
 
 namespace Silnin\ShareTell\StoryBundle\Repository;
 use DateTime;
+use Doctrine\ORM\EntityNotFoundException;
+use Silnin\ShareTell\StoryBundle\Entity\Contribution;
 use Silnin\ShareTell\StoryBundle\Entity\Participant;
 use Silnin\ShareTell\StoryBundle\Entity\Story;
+use Silnin\ShareTell\StoryBundle\Exception\NoParticipantsException;
+use Silnin\ShareTell\StoryBundle\Exception\NotParticipatingException;
 use Silnin\UserBundle\Entity\User;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * StoryRepository
@@ -14,87 +19,50 @@ use Silnin\UserBundle\Entity\User;
  */
 class StoryRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function getPublicActiveStories($limit = 20)
-    {
-        $stories = $this->getEntityManager()->getRepository('SilninShareTellStoryBundle:Story')->findBy(
-            [
-                'type' => 'public',
-                'status' => 'active'
-            ]
-        );
+    const SCOPE_ALL = 'all';
+    const SCOPE_PUBLIC = 'public';
+    const SCOPE_PUBLIC_UNJOINED = 'public_unjoined';
+    const SCOPE_JOINED = 'joined';
+    const SCOPE_CREATED = 'created';
 
-        return $stories;
-    }
+    private $allowedScopes = [
+        self::SCOPE_ALL,
+        self::SCOPE_PUBLIC,
+        self::SCOPE_PUBLIC_UNJOINED,
+        self::SCOPE_JOINED,
+        self::SCOPE_CREATED
+    ];
 
-    public function getPublicUnjoinedStories(User $user, $limit = 20)
-    {
-        $allPublic = $this->getPublicActiveStories($limit);
-        $filteredGames = [];
-
-        /** @var Story $publicGame */
-        foreach ($allPublic as $publicGame) {
-            // check if none of the participants is me.
-
-            /** @var Participant $participant */
-            foreach ($publicGame->getParticipants() as $participant) {
-                if ($participant->getUser()->getId() == $user->getId()) {
-                    // don't add this game
-                    continue 2;
-                }
-            }
-
-            $filteredGames[] = $publicGame;
-        }
-
-        return $filteredGames;
-    }
-
-
-    public function deleteStoriesFromUser(User $user)
-    {
-        $stories = $this->getEntityManager()->getRepository('SilninShareTellStoryBundle:Story')->findBy(
-            [
-                'type' => 'public',
-                'status' => 'active',
-                'creator' => $user
-            ]
-        );
-
-        foreach ($stories as $story) {
-            $this->getEntityManager()->remove($story);
-        }
-
-        $this->getEntityManager()->flush();
-    }
-
-    public function getAllStoriesCreatedByUser(User $user)
-    {
-        return $this->getEntityManager()->getRepository('SilninShareTellStoryBundle:Story')->findBy(
-            [
-                'creator' => $user
-            ]
-        );
-    }
+    private $publicScopes = [
+        self::SCOPE_PUBLIC,
+        self::SCOPE_PUBLIC_UNJOINED
+    ];
 
     /**
-     * @param string $title
-     * @param string $type
+     * @param array $payload
      * @param User $user
      * @return Story
+     * @throws EntityNotFoundException
      */
-    public function createStory($title, $type, User $user)
+    public function createStoryFromPayload(array $payload, User $user)
     {
         $story = new Story();
 
-        $story->setTitle($title);
-        $story->setType($type);
-        $story->setCreator($user);
-        $story->setStatus('active');
-        $story->setModified(new DateTime());
+        $story->setTitle($payload['title']);
+        $story->setType($payload['type']);
+        $story->setStatus($payload['status']);
+        $story->setMinWords($payload['min_words']);
+        $story->setMaxWords($payload['max_words']);
         $story->setCreated(new DateTime());
+        $story->setModified(new DateTime());
+        $story->setCreator($user);
 
         $this->getEntityManager()->persist($story);
         $this->getEntityManager()->flush();
+
+        if (!$story->getId()) {
+            throw new EntityNotFoundException('Could not persist story');
+        }
 
         return $story;
     }
@@ -114,46 +82,200 @@ class StoryRepository extends \Doctrine\ORM\EntityRepository
         );
     }
 
-    /**
-     * Return an array of Stories
-     *
-     * @param User $user
-     * @param bool $filterOutCreated
-     * @return array
-     */
-    public function getJoinedStories(User $user, $filterOutCreated = false)
-    {
-        $participants = $this->getEntityManager()->getRepository('SilninShareTellStoryBundle:Participant')->findBy(
-            [
-                'user' => $user
-            ]
-        );
-
-        $joinedStories = [];
-        /** @var Participant $participant */
-        foreach ($participants as $participant) {
-
-            if (!$filterOutCreated) {
-                $joinedStories[] = $participant->getStory();
-                continue;
-            }
-
-            if ($participant->getStory()->getCreator()->getId() == $user->getId()) {
-                // skip it
-                continue;
-            }
-
-            $joinedStories[] = $participant->getStory();
-        }
-
-        return $joinedStories;
-    }
-
     public function persist(Story $story)
     {
         $this->getEntityManager()->persist($story);
         $this->getEntityManager()->flush();
 
         return $story;
+    }
+
+    public function joinStory(Story $story, User $user)
+    {
+        // dont join if already a participant
+        /** @var Participant $participant */
+        foreach ($story->getParticipants() as $participant) {
+            if ($participant->getUser() == $user) {
+                return;
+            }
+        }
+
+        $participant = new Participant();
+        $participant->setStory($story);
+        $participant->setUser($user);
+        $participant->setJoined(new DateTime());
+        $participant->setStatus('active');
+
+        $this->getEntityManager()->persist($participant);
+        $this->getEntityManager()->flush();
+    }
+
+    public function isItMyTurn(Story $story, User $me)
+    {
+        $meAsParticipant = null;
+
+        /** @var Participant $participant */
+        foreach ($story->getParticipants() as $participant) {
+            if ($participant->getUser() == $me) {
+                $meAsParticipant = $participant;
+            }
+        }
+
+        if (!$meAsParticipant) {
+            throw new NotParticipatingException('You are not participating to this story');
+        }
+
+        if ($meAsParticipant == $this->determineParticipantInTurn($story)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param Story $story
+     * @return Participant
+     * @throws NoParticipantsException
+     * @throws NotParticipatingException
+     */
+    private function determineParticipantInTurn(Story $story)
+    {
+        if (count($story->getParticipants()) < 1) {
+            throw new NoParticipantsException('Cannot determine order when there is no one participating');
+        }
+
+        if (count($story->getParticipants()) == 1) {
+            return $story->getParticipants()[0];
+        }
+
+        /** @var Contribution $lastContribution */
+        $lastContribution = end($story->getContributions());
+
+        if (!$lastContribution) {
+            // no contributions yet, so last participant is in turn
+            return end($story->getParticipants());
+        }
+
+        /**
+         * @var int $position
+         * @var Participant $participant
+         */
+        foreach ($story->getParticipants() as $position => $participant) {
+            if ($participant->getUser() == $lastContribution->getAuthor()) {
+                // found the last key
+                if (($position-1) < 0) {
+                    return end($story->getParticipants());
+                }
+
+                if (array_key_exists(($position-1), $story->getParticipants())) {
+                    return $story->getParticipants()[$position-1];
+                }
+            }
+        }
+
+        throw new NotParticipatingException("You are not a participant to this story");
+    }
+
+    private function amIParticipant(Story $story, User $me)
+    {
+        $participant = $this->getEntityManager()->getRepository('SilninShareTellStoryBundle:Participant')->findOneBy(
+            [
+                'story' => $story,
+                'user' => $me
+            ]
+        );
+
+        if (!$participant) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function getStories($scope = self::SCOPE_PUBLIC, $user = null, $status = 'active')
+    {
+        if (!in_array($scope, $this->allowedScopes)) {
+            throw new BadRequestHttpException('Scope not allowed');
+        }
+
+        $searchParams = [];
+        $searchParams['status'] = $status;
+
+        if (in_array($scope, $this->publicScopes)) {
+            $searchParams['type'] = 'public';
+        }
+
+        $stories = $this->getEntityManager()->getRepository('SilninShareTellStoryBundle:Story')->findBy(
+            $searchParams
+        );
+
+        if (!$user || $scope == self::SCOPE_PUBLIC) {
+            return $stories;
+        }
+
+        $filtered = $this->filterByUserScope($stories, $user, $scope);
+
+        return $this->sortByLatestActivity($filtered);
+    }
+
+    private function filterByUserScope(array $stories, User $user, $scope)
+    {
+        $filtered = [];
+
+        /** @var Story $story */
+        foreach ($stories as $story) {
+
+            switch ($scope) {
+                case self::SCOPE_PUBLIC_UNJOINED:
+                    if (!$this->amIParticipant($story, $user)) {
+                        $filtered[] = $story;
+                    }
+                    break;
+                case self::SCOPE_JOINED:
+                    if ($this->amIParticipant($story, $user)) {
+                        $filtered[] = $story;
+                    }
+                    break;
+                case self::SCOPE_CREATED:
+                    if ($story->getCreator()->getId() == $user->getId()) {
+                        $filtered[] = $story;
+                    }
+                    break;
+            }
+        }
+
+        return $filtered;
+    }
+
+    private function sortByLatestActivity(array $stories)
+    {
+        usort($stories, [$this, "compareByContributionOrCreateDates"]);
+
+        return array_reverse($stories);
+    }
+
+    private function compareByContributionOrCreateDates(Story $storyA, Story $storyB)
+    {
+        $dateA = $this->getLatestDateFromStory($storyA);
+        $dateB = $this->getLatestDateFromStory($storyB);
+
+        if ($dateA == $dateB) {
+            return 0;
+        }
+
+        if ($dateA < $dateB) {
+            return -1;
+        } else {
+            return 1;
+        }
+    }
+
+    private function getLatestDateFromStory(Story $story) {
+        $contributions = $story->getContributions();
+        if (end($contributions)) {
+            return end($contributions)->getCreated()->format('Y-m-d H:i:s');
+        }
+
+        return $story->getCreated()->format('Y-m-d H:i:s');
     }
 }

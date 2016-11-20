@@ -26,4 +26,10 @@ services:
     - "@silnin.participant_repository"
     - "@security.token_storage"
     - "@silnin.contribution_repository"
-    - "@form.factory"
+
+  silnin_share_tell_story.api_controller:
+    class: Silnin\ShareTell\StoryBundle\Controller\StoryController
+    arguments:
+    - "@silnin.story_repository"
+    - "@service_container"
+    - "@silnin.contribution_repository"

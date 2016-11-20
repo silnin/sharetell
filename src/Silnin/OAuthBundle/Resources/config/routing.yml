@@ -1,0 +1,3 @@
+silnin_o_auth_homepage:
+    path:     /
+    defaults: { _controller: SilninOAuthBundle:Default:index }

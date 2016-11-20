@@ -1,26 +1,47 @@
-silnin_share_tell_story_join:
-    path:   /join/{reference}
-    defaults: { _controller: silnin_share_tell_story.default_controller:joinAction }
+#silnin_share_tell_story_join:
+#    path:   /join/{reference}
+#    defaults: { _controller: silnin_share_tell_story.default_controller:joinAction }
+#
+#silnin_share_tell_story_contribute:
+#    path:   /{reference}/contribute
+#    defaults: { _controller: silnin_share_tell_story.default_controller:contributeAction }
+#
+#silnin_share_tell_story_new:
+#    path:   /new
+#    defaults: { _controller: silnin_share_tell_story.default_controller:newAction }
+#
+#silnin_share_tell_story_play:
+#    path:   /{reference}
+#    methods: ["GET"]
+#    defaults: { _controller: silnin_share_tell_story.default_controller:playAction }
+#
+#silnin_share_tell_story_update:
+#    path:   /{reference}
+#    methods: ["PUT"]
+#    defaults: { _controller: silnin_share_tell_story.default_controller:editAction }
 
-silnin_share_tell_story_contribute:
-    path:   /{reference}/contribute
-    defaults: { _controller: silnin_share_tell_story.default_controller:contributeAction }
+silnin_share_tell_story.create:
+    path:   /story
+    methods: ["POST"]
+    defaults: { _controller: silnin_share_tell_story.api_controller:createAction }
 
-silnin_share_tell_story_new:
-    path:   /new
-    defaults: { _controller: silnin_share_tell_story.default_controller:newAction }
-
-silnin_share_tell_story_play:
-    path:   /{reference}
+silnin_share_tell_story.get_all:
+    path:   /story
     methods: ["GET"]
-    defaults: { _controller: silnin_share_tell_story.default_controller:playAction }
+    defaults: { _controller: silnin_share_tell_story.api_controller:getAction }
 
-silnin_share_tell_story_update:
-    path:   /{reference}
-    methods: ["PUT"]
-    defaults: { _controller: silnin_share_tell_story.default_controller:editAction }
+silnin_share_tell_story.get_single:
+    path:   /story/{reference}
+    methods: ["GET"]
+    defaults: { _controller: silnin_share_tell_story.api_controller:getSingleAction }
 
+silnin_share_tell_story.join:
+    path:   /story/{reference}/join
+    methods: ["POST"]
+    defaults: { _controller: silnin_share_tell_story.api_controller:joinAction }
 
-#silnin_share_tell_story_homepage:
-#    path:     /
-#    defaults: { _controller: SilninShareTellStoryBundle:Default:index }
+silnin_share_tell_story.contribute:
+    path:   /story/{reference}/contribute
+    methods: ["POST"]
+    defaults: { _controller: silnin_share_tell_story.api_controller:contributeAction }
+

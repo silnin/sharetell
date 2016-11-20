@@ -26,7 +26,6 @@ small steps:
 - register/confirmed redirects to dashboard
 - welcome message to new users
 - private games
-- reverse turn order (from high to lowest
 - don't allow spam of new story creations/contributions
 - contribute: make sure participant is authenticated and authorized (is it his turn?)
 - block IP (range)
@@ -36,10 +35,9 @@ small steps:
   - invites: participant is not activated until accepted invite
 
 - show case best stories on frontpage
-
+- show participants and show who's turn it is
 
 intermediate steps:
-- API all crud actions of entities
 - rating system for stories and/or participants
 - admin panel
 - moderation per game
@@ -47,3 +45,19 @@ intermediate steps:
 big steps:
 - app
     - push notifications
+
+
+
+*** DONE ***
+
+
+working progress
+- API all crud actions of entities
+
+
+small:
+- reverse turn order (from high to lowest)
+
+intermediate:
+
+big:

@@ -16,10 +16,15 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new FOS\UserBundle\FOSUserBundle(),
+            new FOS\RestBundle\FOSRestBundle(),
+            new JMS\SerializerBundle\JMSSerializerBundle(),
+            new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new Silnin\UserBundle\SilninUserBundle(),
+            new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
             new Silnin\ShareTell\FrontpageBundle\SilninShareTellFrontpageBundle(),
             new Silnin\ShareTell\StoryBundle\SilninShareTellStoryBundle(),
             new Silnin\ShareTell\DashboardBundle\SilninShareTellDashboardBundle(),
+            new Silnin\OAuthBundle\SilninOAuthBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

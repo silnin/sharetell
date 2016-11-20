@@ -12,7 +12,6 @@ use Silnin\ShareTell\StoryBundle\Repository\ContributionRepository;
 use Silnin\ShareTell\StoryBundle\Repository\ParticipantRepository;
 use Silnin\ShareTell\StoryBundle\Repository\StoryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -42,10 +41,6 @@ class DefaultController extends Controller
      * @var ContributionRepository
      */
     private $contributionRepository;
-    /**
-     * @var FormFactory
-     */
-    private $formFactory;
 
     /**
      * @param EngineInterface $twigEngine
@@ -53,22 +48,19 @@ class DefaultController extends Controller
      * @param ParticipantRepository $participantRepository
      * @param TokenStorageInterface $tokenStorage
      * @param ContributionRepository $contributionRepository
-     * @param FormFactory $formFactory
      */
     public function __construct(
         EngineInterface $twigEngine,
         StoryRepository $storyRepository,
         ParticipantRepository $participantRepository,
         TokenStorageInterface $tokenStorage,
-        ContributionRepository $contributionRepository,
-        FormFactory $formFactory
+        ContributionRepository $contributionRepository
     ) {
         $this->twigEngine = $twigEngine;
         $this->participantRepository = $participantRepository;
         $this->storyRepository = $storyRepository;
         $this->tokenStorage = $tokenStorage;
         $this->contributionRepository = $contributionRepository;
-        $this->formFactory = $formFactory;
     }
 
     public function indexAction()
@@ -135,6 +127,13 @@ class DefaultController extends Controller
         return $this->twigEngine->renderResponse('SilninShareTellStoryBundle:Default:play.html.twig', $params);
     }
 
+    /**
+     * The order is last to first
+     *
+     * @param array $participants
+     * @param array $contributions
+     * @return mixed
+     */
     private function determineTurn(
         array $participants,
         array $contributions
@@ -144,17 +143,19 @@ class DefaultController extends Controller
             throw new InvalidArgumentException('No participants defined for this game');
         }
 
+        if (count($participants) == 1) {
+            return $participants[0]->getUser();
+        }
+
         $lastContributorPosition = $this->getLastContributor($participants, $contributions);
 
-        if (!is_null($lastContributorPosition)
-            && array_key_exists($lastContributorPosition+1, $participants)
-        ) {
+        if (!is_null($lastContributorPosition) && $lastContributorPosition > 0) {
             //@todo consider status of participant
-            return $participants[$lastContributorPosition+1]->getUser();
+            return $participants[$lastContributorPosition-1]->getUser();
         }
 
         //@todo consider status of participant
-        return $participants[0]->getUser();
+        return end($participants)->getUser();
     }
 
     public function editAction($reference, Request $request)
