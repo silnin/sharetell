@@ -16,19 +16,6 @@ Welcome to the Storytime, traveller.
 {% endif %}
 <br/><br/>
 
-{#{% if created_stories is not empty %}#}
-    {#<h1>Your Stories</h1>#}
-    {#(well...partially yours, anyway)#}
-    {#<ul>#}
-        {#{% for created_story in created_stories %}#}
-            {#<li><a href="/story/{{ created_story.reference }}">{{ created_story.title }}</a></li>#}
-        {#{% endfor %}#}
-    {#</ul>#}
-{#{% else %}#}
-    {#You haven't created any stories yet. Wat are you waiting for? Start word-jamming!<br/>#}
-    {#<a href="/story/new">Start a new story!</a>#}
-{#{% endif %}#}
-
 {% if public_stories is not empty %}
 <h1>Other Stories</h1>
 <ul>
@@ -41,7 +28,7 @@ Welcome to the Storytime, traveller.
 {% endif %}
 
 <br />
-<a href="/story/new">Start a new story!</a>
+<a href="/story/create">Start a new story!</a>
 
 </body>
 </html>

@@ -18,15 +18,6 @@ services:
     arguments:
       - Silnin\ShareTell\StoryBundle\Entity\Contribution
 
-  silnin_share_tell_story.default_controller:
-    class: Silnin\ShareTell\StoryBundle\Controller\DefaultController
-    arguments:
-    - "@templating"
-    - "@silnin.story_repository"
-    - "@silnin.participant_repository"
-    - "@security.token_storage"
-    - "@silnin.contribution_repository"
-
   silnin_share_tell_story.api_controller:
     class: Silnin\ShareTell\StoryBundle\Controller\StoryController
     arguments:

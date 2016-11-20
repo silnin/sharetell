@@ -1,4 +1,25 @@
 silnin_share_tell_dashboard_homepage:
-    path:     /
-#    defaults: { _controller: SilninShareTellDashboardBundle:Default:index }
+    path:     /dashboard
     defaults: { _controller: silnin_share_tell_dashboard.default_controller:indexAction }
+
+silnin_share_tell_dashboard_create_story:
+    path:     /story/create
+    defaults: { _controller: silnin_share_tell_dashboard.story_controller:createStoryAction }
+
+silnin_share_tell_dashboard_join_story:
+    path:     /story/join/{reference}
+    defaults: { _controller: silnin_share_tell_dashboard.story_controller:joinAction }
+
+silnin_share_tell_dashboard_submit_contribute:
+    path:     /story/{reference}/contribute
+    defaults: { _controller: silnin_share_tell_dashboard.story_controller:contributeAction }
+
+silnin_share_tell_dashboard_play_story:
+    path:     /story/{reference}
+    methods: ["GET"]
+    defaults: { _controller: silnin_share_tell_dashboard.story_controller:playAction }
+
+silnin_share_tell_story_update:
+    path:   /story/{reference}
+    methods: ["PUT"]
+    defaults: { _controller: silnin_share_tell_dashboard.story_controller:editAction }

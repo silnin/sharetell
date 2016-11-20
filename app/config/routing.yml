@@ -8,11 +8,8 @@ silnin_share_tell_story:
 
 silnin_share_tell_dashboard:
     resource: "@SilninShareTellDashboardBundle/Resources/config/routing.yml"
-    prefix:   /dashboard
+    prefix:   /
 #
-#silnin_share_tell_frontpage:
-#    resource: "@SilninShareTellFrontpageBundle/Resources/config/routing.yml"
-#    prefix:   /
 
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
@@ -23,3 +20,7 @@ NelmioApiDocBundle:
 
 fos_oauth_server_token:
     resource: "@FOSOAuthServerBundle/Resources/config/routing/token.xml"
+
+silnin_share_tell_frontpage:
+    resource: "@SilninShareTellFrontpageBundle/Resources/config/routing.yml"
+    prefix:   /

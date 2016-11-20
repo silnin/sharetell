@@ -101,11 +101,8 @@ class StoryController extends FOSRestController
         return $error;
     }
 
-    public function joinAction($reference, Request $request)
+    public function joinAction($reference)
     {
-        $body = json_decode($request->getContent(), true);
-        $payload = $body['payload'];
-
         //@todo validation
         //@todo is the current user allowed to do this?
         $me = $this->container->get('security.token_storage')->getToken()->getUser();

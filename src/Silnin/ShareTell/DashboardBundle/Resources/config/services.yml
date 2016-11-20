@@ -1,11 +1,17 @@
 services:
-#    silnin_share_tell_dashboard.example:
-#        class: Silnin\ShareTell\DashboardBundle\Example
-#        arguments: ["@service_id", "plain_value", "%parameter%"]
 
   silnin_share_tell_dashboard.default_controller:
     class: Silnin\ShareTell\DashboardBundle\Controller\DefaultController
     arguments:
     - "@templating"
+    - "@silnin.story_repository"
     - "@security.token_storage"
-    - "@silnin_share_tell_story.api_controller"
+
+  silnin_share_tell_dashboard.story_controller:
+    class: Silnin\ShareTell\DashboardBundle\Controller\StoryController
+    arguments:
+    - "@templating"
+    - "@silnin.story_repository"
+    - "@silnin.participant_repository"
+    - "@security.token_storage"
+    - "@silnin.contribution_repository"

@@ -6,7 +6,7 @@ prio steps
 - create story: add participants, set word limit, set timeout?
   - contribution must be within word limit
   - word counter for text field: error when in excess
-- decent markup (web)
+- workable markup (web)
 - more markup options for contributing (and how to store that? WYSIWYG?
 - menu system for /story and /dashboard urls?
 - example on frontpage (finished story)
@@ -46,14 +46,7 @@ big steps:
 - app
     - push notifications
 
-
-
 *** DONE ***
-
-
-working progress
-- API all crud actions of entities
-
 
 small:
 - reverse turn order (from high to lowest)
@@ -61,3 +54,4 @@ small:
 intermediate:
 
 big:
+- rewrite to make backend served through API and oauth

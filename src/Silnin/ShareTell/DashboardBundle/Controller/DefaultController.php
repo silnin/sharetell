@@ -52,9 +52,8 @@ class DefaultController extends Controller
 
         $params = [];
         $params['me'] = $me;
-        $params['public_stories'] = $this->storyRepository->getPublicUnjoinedStories($me);
-        $params['joined_stories'] = $this->storyRepository->getJoinedStories($me);
-
+        $params['public_stories'] = $this->storyRepository->getStories('public_unjoined', $me);
+        $params['joined_stories'] = $this->storyRepository->getStories('joined', $me);
 
         return $this->twigEngine->renderResponse('SilninShareTellDashboardBundle:Default:index.html.twig', $params);
     }

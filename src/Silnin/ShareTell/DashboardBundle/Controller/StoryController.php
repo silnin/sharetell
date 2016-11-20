@@ -1,7 +1,8 @@
 <?php
 
-namespace Silnin\ShareTell\StoryBundle\Controller;
+namespace Silnin\ShareTell\DashboardBundle\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use DateTime;
 use Exception;
 use InvalidArgumentException;
@@ -11,14 +12,13 @@ use Silnin\ShareTell\StoryBundle\Entity\Story;
 use Silnin\ShareTell\StoryBundle\Repository\ContributionRepository;
 use Silnin\ShareTell\StoryBundle\Repository\ParticipantRepository;
 use Silnin\ShareTell\StoryBundle\Repository\StoryRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Silnin\UserBundle\Entity\User;
 
-class DefaultController extends Controller
+class StoryController extends Controller
 {
     /**
      * @var EngineInterface
@@ -29,14 +29,17 @@ class DefaultController extends Controller
      * @var ParticipantRepository
      */
     private $participantRepository;
+
     /**
      * @var StoryRepository
      */
     private $storyRepository;
+
     /**
      * @var TokenStorageInterface
      */
     private $tokenStorage;
+
     /**
      * @var ContributionRepository
      */
@@ -63,11 +66,6 @@ class DefaultController extends Controller
         $this->contributionRepository = $contributionRepository;
     }
 
-    public function indexAction()
-    {
-        return $this->render('SilninShareTellStoryBundle:Default:index.html.twig');
-    }
-
     public function joinAction($reference, Request $request)
     {
         // get user
@@ -83,7 +81,7 @@ class DefaultController extends Controller
         return $this->redirect('/story/' . $reference);
     }
 
-    public function newAction()
+    public function createStoryAction()
     {
         /** @var User $me */
         $me = $this->tokenStorage->getToken()->getUser();
@@ -124,7 +122,7 @@ class DefaultController extends Controller
         $params['contributions']    = $contributions;
         $params['participants']     = $participants;
 
-        return $this->twigEngine->renderResponse('SilninShareTellStoryBundle:Default:play.html.twig', $params);
+        return $this->twigEngine->renderResponse('SilninShareTellDashboardBundle:Default:play.html.twig', $params);
     }
 
     /**
@@ -237,15 +235,4 @@ class DefaultController extends Controller
         // return back to play
         return $this->redirect('/story/' . $reference);
     }
-
-    public function createAction()
-    {
-    }
-
-//    public function createAction(Request $request)
-//    {
-//        $this->storyRepository->createStory(
-//
-//        );
-//    }
 }

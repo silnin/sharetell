@@ -55,7 +55,7 @@ class Story implements JsonSerializable
     /**
      * @ORM\OneToMany(targetEntity="Silnin\ShareTell\StoryBundle\Entity\Participant", mappedBy="story")
      */
-    private $participants;
+    private $participants = [];
 
     /**
      * @ORM\OneToMany(targetEntity="Silnin\ShareTell\StoryBundle\Entity\Contribution", mappedBy="story")
