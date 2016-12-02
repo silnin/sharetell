@@ -2,6 +2,7 @@ imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: services.yml }
+#    - { resource: "@FOSOAuthServerBundle/Resources/config/security.yml" }
 #    - { resource: "@FrontpageBundle/Resources/config/services.yml" }
 #    - { resource: "@BrowserBundle/Resources/config/services.yml" }
 

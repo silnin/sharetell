@@ -1,0 +1,4 @@
+Silnin\OAuthBundle\Form\Model\Authorize:
+    properties:
+        allowAccess:
+            - IsTrue: { message: "Please check the checkbox to allow access to your profile.", groups: "Authorize" }
