@@ -140,7 +140,7 @@
 
 {% if turn.id == me.id %}
     <div>
-        <form action="/story/{{ story.reference }}/contribute" method="post" name="contributeForm">
+        <form action=" {{ path('silnin_share_tell_dashboard_submit_contribute', { 'reference': story.reference }) }}" method="post" name="contributeForm">
             <input type="textarea" name="contribution" >
             <input type="submit" value="share and tell!" >
         </form>

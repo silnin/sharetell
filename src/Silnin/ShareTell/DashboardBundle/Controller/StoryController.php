@@ -12,6 +12,7 @@ use Silnin\ShareTell\StoryBundle\Entity\Story;
 use Silnin\ShareTell\StoryBundle\Repository\ContributionRepository;
 use Silnin\ShareTell\StoryBundle\Repository\ParticipantRepository;
 use Silnin\ShareTell\StoryBundle\Repository\StoryRepository;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -20,6 +21,11 @@ use Silnin\UserBundle\Entity\User;
 
 class StoryController extends Controller
 {
+    /**
+     * @var Container
+     */
+    protected $container;
+
     /**
      * @var EngineInterface
      */
@@ -51,19 +57,22 @@ class StoryController extends Controller
      * @param ParticipantRepository $participantRepository
      * @param TokenStorageInterface $tokenStorage
      * @param ContributionRepository $contributionRepository
+     * @param Container $container
      */
     public function __construct(
         EngineInterface $twigEngine,
         StoryRepository $storyRepository,
         ParticipantRepository $participantRepository,
         TokenStorageInterface $tokenStorage,
-        ContributionRepository $contributionRepository
+        ContributionRepository $contributionRepository,
+        Container $container
     ) {
         $this->twigEngine = $twigEngine;
         $this->participantRepository = $participantRepository;
         $this->storyRepository = $storyRepository;
         $this->tokenStorage = $tokenStorage;
         $this->contributionRepository = $contributionRepository;
+        $this->container = $container;
     }
 
     public function joinAction($reference, Request $request)
@@ -78,7 +87,7 @@ class StoryController extends Controller
         $this->participantRepository->createParticipant($user, $story);
 
         // redirect to play
-        return $this->redirect('/story/' . $reference);
+        return $this->redirectToRoute('silnin_share_tell_dashboard_play_story', ['reference' => $reference]);
     }
 
     public function createStoryAction()
@@ -100,7 +109,7 @@ class StoryController extends Controller
         // add 1st participant
         $this->participantRepository->createParticipant($me, $story);
 
-        return $this->redirect('/dashboard');
+        return $this->redirectToRoute('silnin_share_tell_dashboard_homepage');
     }
 
     public function playAction($reference)
@@ -233,6 +242,11 @@ class StoryController extends Controller
         }
 
         // return back to play
-        return $this->redirect('/story/' . $reference);
+        return $this->redirectToRoute(
+            'silnin_share_tell_dashboard_play_story',
+            [
+                'reference' => $reference
+            ]
+        );
     }
 }

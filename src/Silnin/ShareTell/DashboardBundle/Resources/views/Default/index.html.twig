@@ -7,7 +7,7 @@ Welcome to the Storytime, traveller.
 <h1>Joined Stories</h1>
 <ul>
     {% for joined_story in joined_stories %}
-        <li><a href="/story/{{ joined_story.reference }}">{{ joined_story.title }}</a></li>
+        <li><a href="{{ path('silnin_share_tell_dashboard_play_story', { 'reference': joined_story.reference }) }}">{{ joined_story.title }}</a></li>
     {% endfor %}
 </ul>
 {% else %}
@@ -20,7 +20,7 @@ Welcome to the Storytime, traveller.
 <h1>Other Stories</h1>
 <ul>
     {% for public_story in public_stories %}
-        <li><a href="/read/{{ public_story.reference }}">{{ public_story.title }}</a></li>
+        <li><a href="{{ path('silnin_share_tell_frontpage_read_story', { 'reference': public_story.reference }) }}">{{ public_story.title }}</a></li>
     {% endfor %}
 </ul>
 {% else %}
@@ -28,7 +28,7 @@ Welcome to the Storytime, traveller.
 {% endif %}
 
 <br />
-<a href="/story/create">Start a new story!</a>
+<a href="{{ path('silnin_share_tell_dashboard_create_story') }}">Start a new story!</a>
 
 </body>
 </html>
