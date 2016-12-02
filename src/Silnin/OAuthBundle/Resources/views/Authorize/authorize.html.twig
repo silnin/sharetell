@@ -1,0 +1,14 @@
+<html>
+<body>
+<div class="form">
+    {{ form_start(form, {'action': action, 'method': 'POST'}) }}
+        <div class="form_title">
+        Grant access to {{ client.name }}
+        </div>
+        <div class="form_button">
+            <input type="submit" value="Authorize" />
+        </div>
+    {{ form_end(form) }}
+</div>
+</body>
+</html>

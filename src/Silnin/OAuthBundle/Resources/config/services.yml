@@ -1,4 +1,19 @@
 services:
-#    silnin_o_auth.example:
-#        class: Silnin\OAuthBundle\Example
-#        arguments: ["@service_id", "plain_value", "%parameter%"]
+
+  silnin.oauth.authorize.form_type:
+    class: Silnin\OAuthBundle\Form\Type\AuthorizeFormType
+
+  silnin.oauth.authorize.form:
+    class:   Symfony\Component\Form\Form
+    factory: [ "@form.factory", createNamed ]
+    arguments:
+      - "silnin_oauth"
+      - "Silnin\\OAuthBundle\\Form\\Type\\AuthorizeFormType"
+
+  silnin.oauth.authorize.form_handler:
+    class: Silnin\OAuthBundle\Form\Handler\AuthorizeFormHandler
+    arguments:
+      - "@silnin.oauth.authorize.form"
+      - "@request_stack"
+      - "@security.token_storage"
+      - "@fos_oauth_server.server"
