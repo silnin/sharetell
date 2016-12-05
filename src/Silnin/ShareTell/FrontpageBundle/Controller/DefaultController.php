@@ -5,6 +5,7 @@ namespace Silnin\ShareTell\FrontpageBundle\Controller;
 use Silnin\ShareTell\StoryBundle\Repository\ContributionRepository;
 use Silnin\ShareTell\StoryBundle\Repository\ParticipantRepository;
 use Silnin\ShareTell\StoryBundle\Repository\StoryRepository;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -40,6 +41,17 @@ class DefaultController extends Controller
     public function indexAction()
     {
         return $this->twigEngine->renderResponse('SilninShareTellFrontpageBundle:Default:index.html.twig', []);
+    }
+
+    public function testAction($returnurl)
+    {
+        return new Response(
+            '',
+            302,
+            array(
+                'Location' => $returnurl
+            )
+        );
     }
 
     public function readAction($reference)

@@ -2,6 +2,11 @@ silnin_share_tell_frontpage_homepage:
     path:     /
     defaults: { _controller: silnin_share_tell_frontpage.default_controller:indexAction }
 
+silnin_share_tell_frontpage_homepage_test:
+    path:     /test/{returnurl}
+    defaults: { _controller: silnin_share_tell_frontpage.default_controller:testAction }
+
+
 silnin_share_tell_frontpage_read_story:
     path:   /read/{reference}
     methods: ["GET"]
