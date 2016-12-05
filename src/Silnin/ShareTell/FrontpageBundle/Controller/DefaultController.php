@@ -49,7 +49,7 @@ class DefaultController extends Controller
             '',
             302,
             array(
-                'Location' => $returnurl
+                'Location' => 'http://' . $returnurl
             )
         );
     }
