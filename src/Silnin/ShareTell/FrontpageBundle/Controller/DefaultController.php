@@ -50,7 +50,7 @@ class DefaultController extends Controller
             '',
             302,
             array(
-                'Location' => 'http://' . $returnurl
+                'Location' => 'http://sharetell.silnin.nl/oauth/redirect'
             )
         );
     }
