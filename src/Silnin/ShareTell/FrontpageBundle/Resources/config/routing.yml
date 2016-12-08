@@ -11,3 +11,8 @@ silnin_share_tell_frontpage_read_story:
     path:   /read/{reference}
     methods: ["GET"]
     defaults: { _controller: silnin_share_tell_frontpage.default_controller:readAction }
+
+silnin_sharetell_frontpage_assetlinks:
+    path: /.well-known/assetlinks.json
+    methods: ["GET"]
+    defaults: { _controller: silnin_share_tell_frontpage.default_controller:assetLinksAction }

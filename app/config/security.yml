@@ -67,4 +67,6 @@ security:
         - { path: ^/api, role: ROLE_USER }
         - { path: ^/read, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/.well-known/assetlinks.json, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/test, role: IS_AUTHENTICATED_ANONYMOUSLY }
+
