@@ -1,9 +1,9 @@
 <html>
 {% block head %}
-    {{ include('SilninShareTellDashboardBundle:Default:base.html.twig') }}
+    {{ include('SilninShareTellDashboardBundle:Default:head.html.twig') }}
 {% endblock %}
 
-<body>
+{% block body %}
 
 Welcome to the Storytime, traveller.
 
@@ -34,5 +34,9 @@ Welcome to the Storytime, traveller.
 <br />
 <a href="{{ path('silnin_share_tell_dashboard_create_story') }}">Start a new story!</a>
 
-</body>
+{% endblock %}
+
+{% block footer %}
+    {{ include('SilninShareTellDashboardBundle:Default:foot.html.twig') }}
+{% endblock %}
 </html>
