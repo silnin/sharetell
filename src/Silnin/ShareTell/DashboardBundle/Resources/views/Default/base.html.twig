@@ -1,0 +1,12 @@
+{% stylesheets
+'assets/bootstrap/css/bootstrap.min.css'
+filter='cssrewrite' output='css/compiled/app.css' %}
+<link rel="stylesheet" href="{{ asset_url }}" />
+{% endstylesheets %}
+
+{% javascripts
+'assets/jquery/jquery-3.1.1.min.js'
+'assets/bootstrap/js/bootstrap.min.js'
+output='js/compiled/app.js' %}
+<script src="{{ asset_url }}"></script>
+{% endjavascripts %}
